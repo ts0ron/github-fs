@@ -50,7 +50,7 @@ function RegistrationPage() {
           .then(setToken)
           .then(() => {window.location.href = FS_TREE_ROUTE_URL})
           .catch((error) => {
-            console.log("The error when registering", error);
+            console.error(error);
           });
       });
   }
@@ -114,6 +114,7 @@ function RegistrationPage() {
                     sx: { width: "300px", height: "16px" },
                   }}
                   name="password"
+                  type={"password"}
                   value={values.password}
                   onChange={handleChange}
                   placeholder={"Password"}

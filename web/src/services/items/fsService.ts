@@ -14,11 +14,10 @@ class fsService extends ApiService {
   }
 
   getFile(metadata: RepositoryMetadata) {
-    return this.fetchWithAuth<RepositoryMetadata, FileSystemNode<string>>(this.FILE_URL, {
+    return this.fetchWithAuth<RepositoryMetadata, string>(this.FILE_URL, {
       params: metadata
     })
       .then(res => {
-        console.log("The file is", res)
         return res.data
       })
   }

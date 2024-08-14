@@ -1,19 +1,9 @@
 import React from "react";
 import { Box, Button, TextField, Typography, Link } from "@mui/material";
 import {
-  DEFAULT_FONT_COLOR,
-  LOGGIN_PANEL_BACKGROUND_COLOR,
-} from "../../theme/paletteUtils";
-import IconsFactory from "../../icons/IconsFactory";
-import * as yup from "yup";
-import {
   Field,
-  FieldInputProps,
-  FieldMetaProps,
   Form,
   Formik,
-  FormikBag,
-  yupToFormErrors,
 } from "formik";
 import PanelLayout from "../../components/panel";
 import useToken from "../../hooks/useToken";
@@ -31,19 +21,15 @@ function LoginPage(props: LoginPageProps) {
     values: any,
     setSubmitting: (isSubmitting: boolean) => void
   ) {
-    // console.log("Got to the submit", values);
     authService
       .fetchToken(values.username, values.password)
       .then((token) => {
         window.open(FS_TREE_ROUTE_URL, "_self");
-        // console.log("And we will");
-        // console.log("Got the token", token);
         return token;
       })
       .then(setToken)
       .then(() => {})
       .catch((err) => {
-        // console.log("Error", err);
       });
   }
 
@@ -60,7 +46,6 @@ function LoginPage(props: LoginPageProps) {
           initialValues={{ username: "", password: "" }}
           validationSchema={usernamePasswordValidationSchema}
           onSubmit={(values, { setSubmitting }) => {
-            console.log("Are we here?");
             handleSubmit(values, setSubmitting);
           }}
         >
@@ -111,6 +96,7 @@ function LoginPage(props: LoginPageProps) {
                       sx: { width: "300px", height: "16px" },
                     }}
                     name="password"
+                    type={"password"}
                     value={values.password}
                     onChange={handleChange}
                     placeholder={"Password"}

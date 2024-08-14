@@ -1,4 +1,4 @@
-import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
+import React, {Dispatch, SetStateAction, useState} from 'react';
 import {SimpleTreeView} from "@mui/x-tree-view/SimpleTreeView";
 import {FileSystemItem, FileSystemNode, NodeType} from "../../model/repository";
 import {UseQueryResult} from "react-query/types/react/types";
@@ -6,10 +6,21 @@ import {useQuery} from "react-query";
 import fsService from "../../services/items/fsService";
 import {CircularProgress, Typography} from "@mui/material";
 import Box from "@mui/material/Box";
-import FileTreeNode from "./fileTreeNode";
-import DirectoryTreeNode from "./directoryTreeNode";
 import FileContentModal from "../modals/filecontent";
+import IconsFactory from "../../icons/IconsFactory";
+import DirectoryTreeNode from "./directoryTreeNode";
+import FileTreeNode from "./fileTreeNode";
 
+
+export function treeNodeLabel(name: string, type: NodeType) {
+  return <Box
+    sx={{display: "flex", alignItems: "center", gap: "10px"}}>
+    {type === NodeType.FILE ?
+      <IconsFactory.FileIcon.Text sx={{fontSize: 16}}/>
+      : <IconsFactory.FileIcon.Folder sx={{fontSize: 16}}/>}
+    {name}
+  </Box>
+}
 
 export const RenderNodePerType = (item: FileSystemItem, owner: string, repository: string, setAction: Dispatch<SetStateAction<string | null>>) => {
   const TreeNode = item.type === NodeType.FILE ? FileTreeNode : DirectoryTreeNode
@@ -49,18 +60,9 @@ function FileSystemTree(props: FileSystemTreeProps) {
                                                                                  return res
                                                                                })
                                                                                .catch(err => {
-                                                                                 console.log("Error", err)
                                                                                  return err
                                                                                }),
                                                                          });
-
-  useEffect(() => {
-
-  }, [action])
-
-  function handleModalClose() {
-    setFile({open: false, content: "", name: ""})
-  }
 
   const handleItemExpansionToggle = (
     event: React.SyntheticEvent,
@@ -68,7 +70,6 @@ function FileSystemTree(props: FileSystemTreeProps) {
     isExpanded: boolean,
   ) => {
     if (itemId.startsWith("file:")) {
-      console.log("Are not we here ?")
       setAction(itemId);
     }
   };
@@ -81,11 +82,17 @@ function FileSystemTree(props: FileSystemTreeProps) {
   if (query.isError) {
     return <Typography>{"Something went wrong, please try again"}</Typography>
   }
-  console.log("The open file", file)
   const rootDir = query.data
 
   return (
-    <Box sx={{display: "flex", flexDirection: "column", gap: "10px", width: "100%"}}>
+    <Box sx={{
+      display: "flex",
+      flexDirection: "column",
+      gap: "10px",
+      width: "100%",
+      height: "10hv",
+      justifyContent: "space-between"
+    }}>
       <Typography fontSize={36}>{rootDir.name}</Typography>
       <SimpleTreeView onItemExpansionToggle={handleItemExpansionToggle}
                       expansionTrigger="iconContainer">
@@ -94,6 +101,7 @@ function FileSystemTree(props: FileSystemTreeProps) {
       </SimpleTreeView>
       {action &&
           <FileContentModal itemId={action}
+                            name={action.split("/")[-1]}
                             onClose={() => setAction(null)}
                             owner={owner}
                             repository={repository}/>}

@@ -1,37 +1,92 @@
 import React, {useEffect} from 'react'
 import Box from "@mui/material/Box";
-import {Button, ClickAwayListener, Modal, Typography} from "@mui/material";
+import {Button, ClickAwayListener, Modal, TextareaAutosize, Typography} from "@mui/material";
 import fsService from "../../../services/items/fsService";
 
-
 interface FileContentModalProps {
+  name: string,
   itemId: string,
   onClose: () => void,
   owner: string,
   repository: string
 }
 
+interface ModalHeaderProps {
+  name: string
+}
+
+function ModalHeader(props: ModalHeaderProps) {
+  const {name} = props
+  return <Box sx={{
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#424242",
+    borderTopLeftRadius: "6px",
+    borderTopRightRadius: "6px",
+    height: "64px"
+  }}>
+    {name}
+    <Typography color={"red"}>
+      {name}
+    </Typography>
+  </Box>
+}
+
+interface ModalFooterProps {
+  onClose: () => void
+}
+
+function ModalFooter(props: ModalFooterProps) {
+  const {onClose} = props;
+  return <Box sx={{
+    backgroundColor: "#424242",
+    borderBottomRightRadius: "6px",
+    borderBottomLeftRadius: "6px",
+    height: "64px",
+    display: "flex",
+  }}>
+    <Button onClick={onClose}></Button>
+  </Box>
+}
+
 function FileContentModal(props: FileContentModalProps) {
-  const {itemId, onClose} = props;
+  const {itemId, onClose, owner, name, repository} = props;
   const [file, setFile] = React.useState<string | null>(null)
-  const [name, setName] = React.useState<string | null>(null)
 
 
   useEffect(() => {
     if (itemId.startsWith("file:")) {
-      fsService.getFile({owner: props.owner, repository: props.repository, path: itemId.slice(5)})
+      fsService.getFile({owner: owner, repository: repository, path: itemId.slice(5)})
         .then(res => {
-          console.log("The content and name", res.content, res.name)
-          setFile(res.content)
-          setName(res.name)
+          setFile(res)
         })
     }
-  }, [itemId]);
+  }, [itemId, owner, repository]);
 
   return (
     <ClickAwayListener onClickAway={onClose}>
-      <Modal sx={{width: "500px", height: "400px"}} open={!!file && itemId.startsWith("file:")} onClose={onClose}>
-        <Box sx={{display: "flex", height: "100%", justifyContent: "center", alignItems: "center"}}>
+      <Modal open={(!!file || file === "") && itemId.startsWith("file:")}
+             onClose={onClose}
+             slotProps={{
+               backdrop: {
+                 style: {
+                   backgroundColor: "rgba(0, 0, 0, 0.5)"
+                 }
+               }
+             }}
+      >
+        <Box sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100%",
+          width: "100%",
+          position: "absolute",
+          top: "0",
+          left: "0",
+          pointerEvents: "none"
+        }}>
           <Box sx={{
             alignSelf: "center",
             display: "flex",
@@ -42,29 +97,12 @@ function FileContentModal(props: FileContentModalProps) {
             flexDirection: "column",
             justifyContent: "space-between"
           }}>
-            <Box sx={{
-              diplay: "flex",
-              justifyContent: "left",
-              backgroundColor: "#424242",
-              borderTopLeftRadius: "6px",
-              borderTopRightRadius: "6px",
-              height: "64px"
-            }}>
-              <Typography color={"red"}>
-                {name}
-              </Typography>
+            <ModalHeader name={name}/>
+            <Box sx={{display: "flex", justifyContent: "center", overflowY: "scroll", height: "370px",maxWidth: "570px", p: "20px"}}>
+              <Typography>{name}</Typography>
+              <TextareaAutosize style={{width: "580px", resize: "vertical",overflow: "auto"}} minRows={23} maxRows={23} value={atob(file || "")}/>
             </Box>
-            {file || ""}
-            <Box sx={{
-              backgroundColor: "#424242",
-              borderBottomRightRadius: "6px",
-              borderBottomLeftRadius: "6px",
-              height: "64px",
-              display: "flex",
-              paddingBottom: "100px",
-            }}>
-              <Button onClick={onClose}></Button>
-            </Box>
+            <ModalFooter onClose={onClose}/>
           </Box>
         </Box>
 

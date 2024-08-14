@@ -29,12 +29,9 @@ class authService extends ApiService {
     }
 
     fetchToken(username: string, password: string, force: boolean = false): Promise<string> {
-        console.log("Starting the fetchToken")
         const storedToken = localStorage.getItem('token');
 
-        console.log("We are at the fetchToken")
         if (!!storedToken && !force) {
-            console.log("We are at the fetchToken with token", storedToken)
             return Promise.resolve(storedToken);
         }
 
@@ -42,18 +39,14 @@ class authService extends ApiService {
         formData.append('username', username);
         formData.append('password', password);
 
-        console.log("Starting the request for token to url", this.buildUrl())
-
         return this.post<UserLoginInput, TokenResponse>(`/token`, formData, { headers: { 'Content-Type': 'multipart/form-data' }})
             .then((response: any) => {
-                console.log("The response is", response)
                 if (response instanceof ApiError) {
                     throw new UnAuthorizedHttpError
                 }
                 return response.data;
             }).then((data: TokenResponse) => {
-                console.log("The token response is", data)
-                window.sessionStorage.setItem('token', data.access_token);
+                localStorage.setItem('token', data.access_token);
                 return data.access_token;
             });
     }

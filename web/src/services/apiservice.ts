@@ -57,7 +57,6 @@ export class GeneraltHttpError extends ApiError {
 
 
 export function handleError(error: any): ApiError {
-    console.log("The error in handleError", error)
     let msgs = undefined;
 
     if (error instanceof AxiosError) {
@@ -66,18 +65,15 @@ export function handleError(error: any): ApiError {
 
     switch (error.response.status) {
         case HttpStatusCode.CONFLICT: {
-            console.log("WE GOT A CONFLICT")
             return new ConflictHttpError(msgs)
         }
         case HttpStatusCode.UNAUTHORIZED: {
-            console.log("WE GOT AN UNAUTHORIZED")
             return new UnAuthorizedHttpError(msgs)
         }
         case HttpStatusCode.UNPROCESSABLE_CONTENT: {
             return new UnprocessableContentHttpError(msgs)
         }
         default: {
-            console.log("WE GOT UNMAPPED ERROR")
             return new GeneraltHttpError(msgs)
         }
     }
@@ -119,10 +115,8 @@ export default class ApiService {
     }
 
     post<T, O>(urlSuffix: string, data: any, config: any): Promise<O> {
-        console.log("We got here!")
         return axios.post<any, any, T>(`${this.buildUrl()}${urlSuffix}`, data as T, config)
             .then((response: any) => {
-                console.log("The response is", response)
                 return response;
             })
             .catch(handleError);
