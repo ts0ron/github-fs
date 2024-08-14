@@ -2,6 +2,7 @@ import React, {useEffect} from 'react'
 import Box from "@mui/material/Box";
 import {Button, ClickAwayListener, Modal, TextareaAutosize, Typography} from "@mui/material";
 import fsService from "../../../services/items/fsService";
+import {grey} from "@mui/material/colors";
 
 interface FileContentModalProps {
   name: string,
@@ -20,16 +21,18 @@ function ModalHeader(props: ModalHeaderProps) {
   return <Box sx={{
     display: "flex",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-start",
     backgroundColor: "#424242",
     borderTopLeftRadius: "6px",
     borderTopRightRadius: "6px",
-    height: "64px"
+    height: "64px",
+    paddingLeft: "20px",
   }}>
-    {name}
-    <Typography color={"red"}>
-      {name}
-    </Typography>
+    <Box sx={{display: "flex", width: "200px", flexWrap: "nowrap"}}>
+      <Typography color={grey[200]} sx={{width: "200px", maxHeight: "40px", flexWrap: "nowrap", textOverflow: "ellipsis"}}>
+        {name}
+      </Typography>
+    </Box>
   </Box>
 }
 
@@ -98,9 +101,16 @@ function FileContentModal(props: FileContentModalProps) {
             justifyContent: "space-between"
           }}>
             <ModalHeader name={name}/>
-            <Box sx={{display: "flex", justifyContent: "center", overflowY: "scroll", height: "370px",maxWidth: "570px", p: "20px"}}>
-              <Typography>{name}</Typography>
-              <TextareaAutosize style={{width: "580px", resize: "vertical",overflow: "auto"}} minRows={23} maxRows={23} value={atob(file || "")}/>
+            <Box sx={{
+              display: "flex",
+              justifyContent: "center",
+              overflowY: "scroll",
+              height: "370px",
+              maxWidth: "570px",
+              p: "20px"
+            }}>
+              <TextareaAutosize style={{width: "580px", resize: "vertical", overflow: "auto"}} minRows={23} maxRows={23}
+                                value={atob(file || "")}/>
             </Box>
             <ModalFooter onClose={onClose}/>
           </Box>

@@ -14,8 +14,7 @@ import { usernamePasswordValidationSchema } from "../../utils/validation";
 interface LoginPageProps {}
 
 function LoginPage(props: LoginPageProps) {
-  const {} = props;
-  const { setToken } = useToken();
+  const { setToken } = useToken({});
 
   function handleSubmit(
     values: any,

@@ -1,8 +1,7 @@
 import React, {useState} from "react";
 import * as yup from "yup";
 import {Box, Button, TextField, Typography} from "@mui/material";
-import {PAGE_CONTENT_STYLE} from "../../theme/styleUtils";
-import {Field, Form, Formik, FormikHelpers, FormikValues, getIn,} from "formik";
+import {Field, Form, Formik, FormikHelpers, getIn,} from "formik";
 import {RED_PASTEL_COLOR} from "../../theme/paletteUtils";
 import FileSystemTree from "../../components/tree/fileSystemTree";
 
@@ -31,7 +30,9 @@ function FileExplorerPage() {
     <Box
       key={"file-explorer-view"}
       sx={{
-        ...PAGE_CONTENT_STYLE,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
         flexDirection: "column",
         pt: "20px",
         gap: "20px",
@@ -51,8 +52,8 @@ function FileExplorerPage() {
                                          .required("Repository URL is required"),
                                      })}
         onSubmit={function (
-          values: FormikValues,
-          formikHelpers: FormikHelpers<FormikValues>
+          values: RepositoryUrl,
+          formikHelpers: FormikHelpers<RepositoryUrl>
         ): void | Promise<any> {
           formikHelpers.setSubmitting(true);
           const rawMetadata: string = values.repositoryUrl.slice(19);
@@ -69,7 +70,7 @@ function FileExplorerPage() {
             return
           }
 
-          setMetadata(identifierParts)
+          setMetadata({...identifierParts})
         }}
       >
         {({
@@ -85,7 +86,7 @@ function FileExplorerPage() {
 
 
           return (
-            <Box>
+            <Box sx={{display: "flex", flexDirection: "column", alignItems: "center", gap: "40px"}}>
               <Form onSubmit={handleSubmit}>
                 <Box
                   sx={{
@@ -119,14 +120,16 @@ function FileExplorerPage() {
                   </Button>
                 </Box>
               </Form>
+              {metadata.owner && metadata.repository &&
+                  <Box sx={{display: "flex", width: "calc( 100vw - 40px)", px: "20px"}}>
+                      <FileSystemTree owner={metadata.owner}
+                                      repository={metadata.repository}/>
+                  </Box>}
+
             </Box>
           );
         }}
-
       </Formik>
-      {metadata.owner && metadata.repository &&
-          <FileSystemTree owner={metadata.owner}
-                          repository={metadata.repository}/>}
     </Box>
   );
 }

@@ -1,8 +1,8 @@
 import React from "react";
-import { Route, Switch } from "react-router-dom";
+import {Route, Switch} from "react-router-dom";
 import {
   FS_TREE_ROUTE_URL,
-  LOGGIN_ROUTE_URL,
+  LOGIN_ROUTE_URL,
   LOGOUT_ROUTE_URL,
   REGISTRATION_URL,
 } from "./routes";
@@ -23,7 +23,7 @@ const Index = () => {
         </MainLayout>
       </Route>
       {/* login */}
-      <Route exact path={LOGGIN_ROUTE_URL}>
+      <Route exact path={LOGIN_ROUTE_URL}>
         <MainLayout includeAppBar={false}>
           <LoginPage />
         </MainLayout>

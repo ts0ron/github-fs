@@ -1,10 +1,10 @@
 import React from "react";
-import { AppBar, Box, Button, Typography } from "@mui/material";
-import { PAGE_CONTENT_STYLE } from "../../theme/styleUtils";
+import {AppBar, Box, Button, Typography} from "@mui/material";
 import IconsFactory from "../../icons/IconsFactory";
-import { APP_BAR_COLOR } from "../../theme/paletteUtils";
+import {APP_BAR_COLOR} from "../../theme/paletteUtils";
 import useToken from "../../hooks/useToken";
-import { grey } from "@mui/material/colors";
+import {grey} from "@mui/material/colors";
+import {FS_TREE_ROUTE_URL, LOGIN_ROUTE_URL} from "../../routes/routes";
 
 export interface MainLayoutProps {
   children: React.ReactNode;
@@ -12,8 +12,8 @@ export interface MainLayoutProps {
 }
 
 function MainLayout(props: MainLayoutProps) {
-  const { includeAppBar } = props;
-  const { isTokenExpired, clearToken } = useToken();
+  const {includeAppBar} = props;
+  const {isTokenExpired} = useToken({});
 
 
   return includeAppBar ? (
@@ -34,14 +34,29 @@ function MainLayout(props: MainLayoutProps) {
             px: "20px",
           }}
         >
-          <Box sx={{ display: "flex", gap: "10px" }}>
-            <IconsFactory.Views.FS sx={{ color: "black" }} />
+          <Box sx={{display: "flex", gap: "10px"}}>
+            <IconsFactory.Views.FS sx={{color: grey[400]}}/>
             <Typography>{"Github File System"}</Typography>
           </Box>
-          <Box sx={{ ...PAGE_CONTENT_STYLE }}>
+          <Box sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}>
+            {!isTokenExpired && !window.location.href.endsWith(FS_TREE_ROUTE_URL) && <Button
+                sx={{width: "200px", color: grey[300]}}
+                onClick={() => {
+                  if (!isTokenExpired && !window.location.href.endsWith(FS_TREE_ROUTE_URL)) {
+                    window.location.href = FS_TREE_ROUTE_URL;
+                  } else {
+                    window.location.href = LOGIN_ROUTE_URL;
+                  }
+                }}
+            >
+              {"Explore File Systems"}
+            </Button>}
             <Button
-              sx={{ width: "100px", color: grey[300] }}
-              // variant="contained"
+              sx={{width: "100px", color: grey[300]}}
               onClick={() => {
                 if (!isTokenExpired) {
                   localStorage.removeItem("token");
@@ -54,22 +69,16 @@ function MainLayout(props: MainLayoutProps) {
               {!isTokenExpired ? "Logout" : "Login"}
             </Button>
             {isTokenExpired && <Button
-              sx={{ width: "100px", color: grey[300] }}
+                sx={{width: "100px", color: grey[300]}}
               // variant="contained"
-              onClick={() => {
-                if (isTokenExpired) {
-                  window.location.href = "/login";
-                } else {
-                  window.location.href = "/logout";
-                }
-              }}
+                onClick={() => window.location.href = "/register"}
             >
               {"Sign Up"}
             </Button>}
           </Box>
         </Box>
       </AppBar>
-      <Box sx={{ display: "flex", justifyContent: "center", width: "100%"}}>
+      <Box sx={{display: "flex", justifyContent: "center", width: "100%"}}>
         {props.children}
       </Box>
     </Box>

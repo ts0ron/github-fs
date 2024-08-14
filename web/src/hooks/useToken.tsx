@@ -1,10 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { jwtDecode } from "jwt-decode";
 import authService from "../services/auth/authService";
-import { Redirect } from "react-router-dom";
-import { isToken } from "typescript";
-import { LOGGIN_ROUTE_URL, LOGOUT_ROUTE_URL, REGISTRATION_URL } from "../routes/routes";
+import {HOME_PAGE_ROUTE_URL, LOGIN_ROUTE_URL, REGISTRATION_URL} from "../routes/routes";
 
 function isTokenExpired(token: string | null): boolean {
   if (!token) return true;
@@ -25,7 +23,12 @@ export interface TokenUtils {
   isTokenExpired: boolean;
 }
 
-function useToken(): TokenUtils {
+interface UseTokenProps {
+  forceLogin?: boolean;
+}
+
+function useToken(props: UseTokenProps): TokenUtils {
+  const { forceLogin = true } = props;
   const [isExpired, setIsExpired] = useState<boolean>(
     isTokenExpired(getToken())
   );
@@ -42,11 +45,13 @@ function useToken(): TokenUtils {
   useEffect(() => {
     if (isExpired) {
       deleteToken();
-      if (window.location.pathname !== LOGGIN_ROUTE_URL && window.location.pathname !== REGISTRATION_URL) {
-        window.location.href = LOGGIN_ROUTE_URL;
+      if (window.location.pathname !== LOGIN_ROUTE_URL &&
+        window.location.pathname !== REGISTRATION_URL &&
+        window.location.pathname !== HOME_PAGE_ROUTE_URL && forceLogin) {
+        window.location.href = LOGIN_ROUTE_URL;
       }
     }
-  }, [isExpired]);
+  }, [isExpired, forceLogin]);
 
   useEffect(() => {
     ref.current = setInterval(tokenExpired, 5 * 60 * 1000);

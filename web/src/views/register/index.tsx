@@ -20,7 +20,7 @@ export interface RegisterFormValues {
 }
 
 function RegistrationPage() {
-  const { setToken } = useToken();
+  const { setToken } = useToken({});
   const [registerError, setRegisterError] = React.useState<string | undefined>(
     undefined
   );

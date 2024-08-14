@@ -1,4 +1,4 @@
-import React, {Dispatch, SetStateAction, useState} from 'react';
+import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
 import {SimpleTreeView} from "@mui/x-tree-view/SimpleTreeView";
 import {FileSystemItem, FileSystemNode, NodeType} from "../../model/repository";
 import {UseQueryResult} from "react-query/types/react/types";
@@ -41,11 +41,6 @@ interface FileSystemTreeProps {
 
 function FileSystemTree(props: FileSystemTreeProps) {
   const {owner, repository} = props;
-  const [file, setFile] = useState<{
-    content: string,
-    name: string,
-    open: boolean
-  }>({open: false, content: "", name: ""})
   const [action, setAction] = React.useState<string | null>(null);
 
 
@@ -63,6 +58,9 @@ function FileSystemTree(props: FileSystemTreeProps) {
                                                                                  return err
                                                                                }),
                                                                          });
+  useEffect(() => {
+    query.refetch()
+  }, [owner, repository])
 
   const handleItemExpansionToggle = (
     event: React.SyntheticEvent,
@@ -84,6 +82,17 @@ function FileSystemTree(props: FileSystemTreeProps) {
   }
   const rootDir = query.data
 
+  function resolveFileName(action: string) {
+    let fileName;
+    if (action?.includes("/")) {
+      const splitedAction = (action || "").split("/")
+      fileName = splitedAction[splitedAction.length - 1]
+    } else {
+      fileName = (action || "").split(":")[1]
+    }
+    return fileName
+  }
+
   return (
     <Box sx={{
       display: "flex",
@@ -101,7 +110,7 @@ function FileSystemTree(props: FileSystemTreeProps) {
       </SimpleTreeView>
       {action &&
           <FileContentModal itemId={action}
-                            name={action.split("/")[-1]}
+                            name={resolveFileName(action)}
                             onClose={() => setAction(null)}
                             owner={owner}
                             repository={repository}/>}
