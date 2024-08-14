@@ -1,8 +1,6 @@
 import React from "react";
 import {TreeItem} from "@mui/x-tree-view";
 import {TreeNodeProps} from "./index";
-import {Box} from "@mui/material"
-import IconsFactory from "../../icons/IconsFactory"
 import {treeNodeLabel} from "./fileSystemTree";
 import {NodeType} from "../../model/repository";
 

@@ -3,6 +3,7 @@ import Box from "@mui/material/Box";
 import {Button, ClickAwayListener, Modal, TextareaAutosize, Typography} from "@mui/material";
 import fsService from "../../../services/items/fsService";
 import {grey} from "@mui/material/colors";
+import useLazyQuery from "../../../hooks/useLazyQuery";
 
 interface FileContentModalProps {
   name: string,
@@ -29,7 +30,8 @@ function ModalHeader(props: ModalHeaderProps) {
     paddingLeft: "20px",
   }}>
     <Box sx={{display: "flex", width: "200px", flexWrap: "nowrap"}}>
-      <Typography color={grey[200]} sx={{width: "200px", maxHeight: "40px", flexWrap: "nowrap", textOverflow: "ellipsis"}}>
+      <Typography color={grey[200]}
+                  sx={{width: "200px", maxHeight: "40px", flexWrap: "nowrap", textOverflow: "ellipsis"}}>
         {name}
       </Typography>
     </Box>
@@ -57,15 +59,18 @@ function FileContentModal(props: FileContentModalProps) {
   const {itemId, onClose, owner, name, repository} = props;
   const [file, setFile] = React.useState<string | null>(null)
 
+  const [fetch]= useLazyQuery(`file-content-${itemId}`, () =>
+    fsService.getFile({owner: owner, repository: repository, path: itemId.slice(5)})
+      .then(res => {
+        setFile(res)
+      })
+  )
 
   useEffect(() => {
     if (itemId.startsWith("file:")) {
-      fsService.getFile({owner: owner, repository: repository, path: itemId.slice(5)})
-        .then(res => {
-          setFile(res)
-        })
+      fetch()
     }
-  }, [itemId, owner, repository]);
+  }, [owner, repository, itemId]);
 
   return (
     <ClickAwayListener onClickAway={onClose}>

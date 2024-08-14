@@ -13,10 +13,18 @@ import FileTreeNode from "./fileTreeNode";
 
 
 export function treeNodeLabel(name: string, type: NodeType) {
+
+  let FileIcon = IconsFactory.FileIcon.Text
+  if (type === NodeType.FILE && name) {
+    const nameParts = name.split(".")
+    if ( nameParts.length > 1) {
+      FileIcon = IconsFactory.resolveFileIcon(nameParts[nameParts.length - 1])
+    }
+  }
   return <Box
     sx={{display: "flex", alignItems: "center", gap: "10px"}}>
     {type === NodeType.FILE ?
-      <IconsFactory.FileIcon.Text sx={{fontSize: 16}}/>
+      <FileIcon sx={{fontSize: 16}}/>
       : <IconsFactory.FileIcon.Folder sx={{fontSize: 16}}/>}
     {name}
   </Box>
