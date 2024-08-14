@@ -1,0 +1,36 @@
+services:
+  # test:
+    # build: ./mongosh-test
+  app:
+    build: ./backend
+    ports:
+      - 8000:8000
+    environment:
+      - MONGO_URL=mongodb://root:root@mongodb_atlas:27017/?directConnection=true
+      - SECRET_KEY=8cd9f0f13cb371703c36076cf114d265d3e8a89b9b8dd375895a4c4a025a09a6
+    volumes:
+      - ./backend:/code/app
+  web:
+    build: ./web
+    volumes:
+      - ./web:/usr/src/app
+      - my-docker-modules:/usr/src/app/node_modules
+    environment:
+      - REACT_APP_SERVER_URL=http://localhost:8000
+    ports:
+      - 3000:3000
+  mongodb_atlas:
+    image: mongodb/mongodb-atlas-local
+    environment:
+      - MONGODB_INITDB_ROOT_USERNAME=root
+      - MONGODB_INITDB_ROOT_PASSWORD=root
+    ports:
+      - 27018:27017
+    volumes:
+      - mongodb-data:/data/db
+      - mongodb-config:/data/configdb
+volumes:
+  mongodb-data:
+  mongodb-config:
+  my-docker-modules:
+    driver: local
