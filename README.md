@@ -1,7 +1,7 @@
 # github-fs
 
 ## Prerequisite
-have a docker-compose installed on your env, you can see here["https://docs.docker.com/compose/install/"]
+have a docker-compose installed on your env, you can see [here](https://docs.docker.com/compose/install)
 
 In-order to run this project, please make sure you have docker-compose in your env.
 
