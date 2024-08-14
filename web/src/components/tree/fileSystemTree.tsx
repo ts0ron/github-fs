@@ -102,7 +102,7 @@ function FileSystemTree(props: FileSystemTreeProps) {
       height: "10hv",
       justifyContent: "space-between"
     }}>
-      <Typography fontSize={36}>{rootDir.name}</Typography>
+      <Typography fontSize={36} sx={{paddingLeft: "20px"}}>{rootDir.name}</Typography>
       <SimpleTreeView onItemExpansionToggle={handleItemExpansionToggle}
                       expansionTrigger="iconContainer">
 
