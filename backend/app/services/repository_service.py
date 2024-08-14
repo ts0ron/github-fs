@@ -4,8 +4,6 @@ from pydantic import BaseModel
 from requests import Response
 from fastapi import HTTPException
 from app.schema.repository_object import RepositoryItemWithContent
-
-import requests
 from requests import get
 
 

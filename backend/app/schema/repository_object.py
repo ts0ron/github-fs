@@ -9,7 +9,6 @@ class NodeType(Enum):
 
 
 # Repository Content Item - described item response from the repository (content of a DIR path)
-# TODO: IN USE
 class RepositoryItem(BaseModel):
     name: str
     path: str
@@ -21,7 +20,6 @@ class RepositoryItemWithContent(RepositoryItem):
     content: str | None = None
 
 
-# TODO: IN USE
 class BaseRepositoryNodeModel(BaseModel):
     id: str | None = None
     path: str
@@ -31,12 +29,10 @@ class BaseRepositoryNodeModel(BaseModel):
     content: str | list[dict]
 
 
-# TODO: IN USE
 class RepositoryNodeOutput(BaseRepositoryNodeModel):
     pass
 
 
-# TODO: IN USE
 class GithubRepositoryNodeModel(BaseRepositoryNodeModel):
     owner: str
     repository: str

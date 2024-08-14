@@ -1,7 +1,6 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routers import users, gh_fs, auth
-import time
 
 app = FastAPI()
 
@@ -38,4 +37,4 @@ app.include_router(auth.router)
 
 @app.get("/")
 async def root():
-    return "Welcome to my application"
+    return "Welcome to FileSystem Server"

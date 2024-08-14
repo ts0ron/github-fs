@@ -1,7 +1,5 @@
-import datetime
-
 from app.db.config.db import github_nodes
-from app.schema.repository_object import GithubRepositoryNodeModel, GithubRepositoryNodeModel, NodeType
+from app.schema.repository_object import GithubRepositoryNodeModel, NodeType
 from app.schema.mappers.github_service import to_github_node_model, from_db_to_model_dict
 
 
